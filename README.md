@@ -1,8 +1,47 @@
 # CarND-Controls-MPC
 Self-Driving Car Engineer Nanodegree Program
+---
+#### Model
+We are using Kinematic model for vehicle tracking and control. It's state can be described by following variables:
+* x-position,
+* y-position,
+* direction,
+* velocity,
+* cross-track error and
+* orientation error.
+
+Lines 103-108 in MPC.cpp give update equations for Kinematic model represented as constraints.
+
+#### Actuators
+We use
+* steering direction and
+* accelaration (with negative values indicating braking)
+as actuators for controlling the vehicle.
+
+We constrain the steering direction to be between [-25deg, 25deg] whereas accelaration to be between [-1, 1].
+
+#### Cost Function
+Implemented **Cost function** for the model depends on
+* cte error,
+* orientation error,
+* difference between current velocity and reference velocity (to ensure car is always in motion),
+* steering values,
+* throttle values,
+* difference between consecutive steering values and
+* difference between consecutive throttle values.
+
+Cost function is a weighed sum of above parameters (refer to MPC.cpp line 37-57).
+
+#### N, dt
+In MPC model, **N** determines number steps to predict in future whereas **dt** refers to timestep between each prediction step. I began with dt = latency = 0.1 sec and chose N = 10 in order to make event horizon length = 1 sec. I found these values to be stable and hence I chose to stick with those.
+
+#### Waypoint transformation
+I am transforming waypoints from global co-ordinate system to local / car co-ordinate system as a preprocessing step.
+
+#### Latency workaround
+To deal with latency, I updated current state with state predicted after 0.1 latency sec using regular Kinematic model update equations (note that in such case x, y and orientation are 0).
 
 ---
-
 ## Dependencies
 
 * cmake >= 3.5
